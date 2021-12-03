@@ -32,6 +32,7 @@ export class RestaurantService {
       })
       this.logger.log('logger is triggered')
       this.logger.log(image)
+      
       const existingEmail = await this.restaurantModel.findOne({ email: createRestaurantDto.email })
       if (existingEmail) {
         throw new RestaurantWithThatEmailAlreadyExistsException(createRestaurantDto.email)

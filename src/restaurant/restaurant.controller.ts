@@ -24,7 +24,8 @@ export class RestaurantController {
     @Body() createRestaurantDto: CreateRestaurantDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    return (this.restaurantService.create(createRestaurantDto, file), file.originalname)
+    return (this.restaurantService.create(createRestaurantDto, file))
+
   }
 
 
