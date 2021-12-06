@@ -42,6 +42,9 @@ export class RestaurantController {
   }
 
 
+
+  // problem:- image is not getting uploaded (in restaurant folder) and existing image is not getting deleted. when change directory path to something else like (restaurant2) in destination then image is getting upload. 
+  // using Id as "param" because auth is not done yet. once auth is established "id " will be extracted from jwt
   @Patch(':id')
   @UseInterceptors(
     FileInterceptor('image', {
