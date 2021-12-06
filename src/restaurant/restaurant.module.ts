@@ -8,7 +8,7 @@ import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [MulterModule.register({
-    dest: "./uploads"
+    dest: "./public"
   }),
   MongooseModule.forFeature([{ name: 'Restaurant', schema: RestaurantSchema }])
   ],

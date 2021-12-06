@@ -1,5 +1,5 @@
 import { diskStorage } from 'multer';
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
@@ -12,20 +12,21 @@ export class RestaurantController {
 
   constructor(private readonly restaurantService: RestaurantService) { }
 
+  // adding restaurant
   @Post()
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
-      destination: "./uploads/restaurant",
+      destination: "./public/uploads/restaurant",
       filename: editFileName
     }),
     fileFilter: imageFilter
   }))
   async create(
+    @Request() req,
     @Body() createRestaurantDto: CreateRestaurantDto,
     @UploadedFile() file: Express.Multer.File
   ) {
-    return (this.restaurantService.create(createRestaurantDto, file))
-
+    return (this.restaurantService.create(req, createRestaurantDto, file))
   }
 
 
@@ -41,9 +42,23 @@ export class RestaurantController {
 
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRestaurantDto: UpdateRestaurantDto) {
-    return this.restaurantService.update(id, updateRestaurantDto);
+  @UseInterceptors(FileInterceptor('image', {
+    storage: diskStorage({
+      destination: "./public/uploads/restaurant",
+      filename: editFileName
+    }),
+    fileFilter: imageFilter
+  }))
+ async update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updateRestaurantDto: UpdateRestaurantDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.restaurantService.update(req, id, updateRestaurantDto,file);
   }
+
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

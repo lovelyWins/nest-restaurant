@@ -4,10 +4,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { ProductModule } from './product/product.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [RestaurantModule,DatabaseModule, ProductModule ],
+  imports: [
+    ServeStaticModule.forRoot({ rootPath: join(__dirname, '..', 'public') }),
+    ConfigModule.forRoot(),
+    RestaurantModule,
+    DatabaseModule,
+    ProductModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
