@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { editFileName, imageFilter } from './../utils/imgUpload.helper';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: "./public/uploads/product",
+        filename: editFileName
+      }),
+      fileFilter: imageFilter
+    }))
+  create(
+    @Request() req,
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.productService.create(req, createProductDto, file);
   }
 
   @Get()
@@ -23,8 +38,21 @@ export class ProductController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(id, updateProductDto);
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: "./public/uploads/product",
+        filename: editFileName
+      }),
+      fileFilter: imageFilter
+    }))
+  async update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @UploadedFile() file: Express.Multer.File
+  ) {
+    return this.productService.update(req, id, updateProductDto, file);
   }
 
   @Delete(':id')

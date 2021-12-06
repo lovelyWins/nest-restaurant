@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { Restaurant } from './interfaces/restaurant.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Logger } from '@nestjs/common';
-import { createImagePath, editFileName } from './utils/imgUpload.helper';
+import { createImagePath, editFileName } from '../utils/imgUpload.helper';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -26,7 +26,7 @@ export class RestaurantService {
   async create(req, createRestaurantDto: CreateRestaurantDto, image: Express.Multer.File) {
     try {
 
-      const imgPath = createImagePath(req, image);
+        const imgPath = createImagePath(req, image,'restaurant');
       const newRestaurant = await new this.restaurantModel({
         name: createRestaurantDto.name,
         email: createRestaurantDto.email,
@@ -75,19 +75,17 @@ export class RestaurantService {
   // once auth is working id will be extracted from token instead of param
   async update(req, id: string, updateRestaurantDto: UpdateRestaurantDto, newImg: Express.Multer.File) {
 
-    this.logger.log(newImg)
+  
     try {
       if (newImg && newImg.path) {
-        updateRestaurantDto.image = createImagePath(req, newImg)
+        updateRestaurantDto.image = createImagePath(req, newImg, 'restaurant')
       } else {
         delete updateRestaurantDto.image
       }
 
       const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate({ _id: id }, updateRestaurantDto, { new: true, upsert: true }).select("-password -__v -address._id")
 
-
       if (newImg) {
-        this.logger.log(path.join(__dirname, "../../public/uploads/restaurant", path.basename(updateRestaurantDto.image)))
         fs.unlinkSync(path.join(__dirname, "../../public/uploads/restaurant", path.basename(updateRestaurantDto.image)))
       }
 

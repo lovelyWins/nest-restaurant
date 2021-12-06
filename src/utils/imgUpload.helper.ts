@@ -19,9 +19,9 @@ export const editFileName = (req, file, cb) => {
 }
 
 // creating image path
-export const createImagePath = (req,image) =>{
+export const createImagePath = (req, image, moduleName) => {
     const protocol = req.protocol
     const host = req.headers.host
-    const imgPath = `${protocol}://${host}/uploads/restaurant/${image.filename}`
+    const imgPath = `${protocol}://${host}/uploads/${moduleName}/${image.filename}`
     return imgPath
 }
