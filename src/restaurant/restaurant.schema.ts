@@ -6,6 +6,7 @@ const addressSchema = new mongoose.Schema({
     street: String
 })
 
+// creating schema for restaurant
 export const RestaurantSchema = new mongoose.Schema({
 
     name: { type: String },
