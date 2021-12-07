@@ -26,7 +26,7 @@ export class RestaurantService {
   async create(req, createRestaurantDto: CreateRestaurantDto, image: Express.Multer.File) {
     try {
 
-        const imgPath = createImagePath(req, image,'restaurant');
+      const imgPath = createImagePath(req, image, 'restaurant');
       const newRestaurant = await new this.restaurantModel({
         name: createRestaurantDto.name,
         email: createRestaurantDto.email,
@@ -49,6 +49,7 @@ export class RestaurantService {
     }
   }
 
+  // getting all restaurant
   async findAll() {
 
     try {
@@ -59,6 +60,7 @@ export class RestaurantService {
     }
   }
 
+  // getting one restaurant by id
   async findOne(id: string) {
 
     try {
@@ -75,7 +77,6 @@ export class RestaurantService {
   // once auth is working id will be extracted from token instead of param
   async update(req, id: string, updateRestaurantDto: UpdateRestaurantDto, newImg: Express.Multer.File) {
 
-  
     try {
       if (newImg && newImg.path) {
         updateRestaurantDto.image = createImagePath(req, newImg, 'restaurant')
@@ -100,6 +101,7 @@ export class RestaurantService {
 
   }
 
+  // deleting restaurant by id
   async remove(id: string) {
     try {
       await this.restaurantModel.findByIdAndDelete({ _id: id })
@@ -108,4 +110,38 @@ export class RestaurantService {
       throw { message: error.message }
     }
   }
+
+  // finding restaurant by email
+  async findRestaurantByEmail(email) {
+    this.logger.log('findrestaurantbyemail is running')
+    const restaurant = await this.restaurantModel.findOne({ email })
+    return restaurant
+  }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

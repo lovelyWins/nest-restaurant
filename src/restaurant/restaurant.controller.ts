@@ -1,5 +1,6 @@
+import { LocalAuthGuard } from './../auth/local-auth.guard';
 import { diskStorage } from 'multer';
-import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam } from '@nestjs/common';
+import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam, UseGuards } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
@@ -30,6 +31,13 @@ export class RestaurantController {
     return (this.restaurantService.create(req, createRestaurantDto, file))
   }
 
+
+  //login
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async login(@Request() req) {
+    return req.restaurant
+  }
 
   @Get()
   findAll() {
