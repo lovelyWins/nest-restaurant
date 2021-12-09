@@ -1,3 +1,4 @@
+import { AuthModule } from './../auth/auth.module';
 import { RestaurantSchema } from './restaurant.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
@@ -7,14 +8,14 @@ import { MulterModule } from '@nestjs/platform-express';
 
 
 @Module({
-  imports: [MulterModule.register({
+  imports: [
+    MulterModule.register({
     dest: "./public"
   }),
-  MongooseModule.forFeature([{ name: 'Restaurant', schema: RestaurantSchema }])
-  ],
+  MongooseModule.forFeature([{ name: 'Restaurant', schema: RestaurantSchema }]),],
   controllers: [RestaurantController],
   providers: [RestaurantService],
-  exports:[RestaurantService]
+  exports: [RestaurantService]
 })
 
 export class RestaurantModule { }

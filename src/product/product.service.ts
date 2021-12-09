@@ -5,7 +5,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Model } from 'mongoose'
 import { Product } from "./interface/product.interface"
-import { createImagePath } from 'src/utils/imgUpload.helper'; ;
+import { createImagePath } from 'src/utils/imgUpload.helper';;
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -69,9 +69,6 @@ export class ProductService {
 
 
   }
-
-
-
 
   async remove(id: string) {
     await this.productModel.findByIdAndDelete({ _id: id })

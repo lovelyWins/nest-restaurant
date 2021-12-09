@@ -1,42 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { RestaurantService } from 'src/restaurant/restaurant.service';
+import { HttpException } from './../httpExceptions/HttpException';
+
+import { LoginDto } from './dto/login.dto';
+import { CreateRestaurantDto } from './../restaurant/dto/create-restaurant.dto';
+import { RestaurantService } from './../restaurant/restaurant.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-    logger: Logger
 
-    constructor(private restaurantService: RestaurantService) {
+    logger: Logger;
+    constructor(
+        private restaurantService: RestaurantService,
+        private jwtService: JwtService,
+
+    ) {
         this.logger = new Logger()
     }
 
 
-    async validateRestaurant(email: string, password: string) {
-        this.logger.log('validator auth service is running ')
-        const restaurant = await this.restaurantService.findOne(email)
+    async register(req, createRestaurantDto: CreateRestaurantDto, file: Express.Multer.File) {
 
-        // cheking if restaurant exist in db
-        this.logger.log('restaurnt found in database : ', restaurant)
-        if (!restaurant) {
-            return 'Cannot find restaurant'
+        try {
+            return await this.restaurantService.create(req, createRestaurantDto, file)
+        }
+        catch (error) {
+            throw { message: error.message }
         }
 
-
-        // cheking if user is entering correct password
-        if (restaurant.password = password) {
-            this.logger.log('Restaurant authenticated successfully')
-            return restaurant
-
-        }
-
-
-        return null
     }
 
+    // login method
+    async login(loginDto: LoginDto) {
+        const restaruant = await this.restaurantService.findRestaurantByLogin(loginDto)
+        return this.createToken(restaruant.id)
+    }
 
+    // creating jwt token
+    async createToken(id: string) {
+        const expiresIn = process.env.EXPIRESIN
+        const token = this.jwtService.sign({ id })
+        return { token, expiresIn }
+    }
 
-
-
+    // validate restaurant
+    async vaidateRestauant(payload) {
+        const restaurant = await this.restaurantService.findRestaurantByPayload(payload)
+        if (!restaurant) {
+            throw new UnauthorizedException()
+        }
+        return restaurant
+    }
 
 
 }

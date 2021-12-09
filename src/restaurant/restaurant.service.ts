@@ -1,5 +1,9 @@
+import { JwtService } from '@nestjs/jwt';
+import { comparePassword, } from './../utils/auth.helper';
+import { LoginDto } from './../auth/dto/login.dto';
 import { RestaurantWithThatEmailAlreadyExistsException } from './../httpExceptions/RestaurantWithThatEmailAlreadyExistsException';
-import { Injectable, Request } from '@nestjs/common';
+import { Injectable, Request, UnauthorizedException } from '@nestjs/common';
+import { hashPassword } from 'src/utils/auth.helper';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Model } from 'mongoose';
@@ -9,6 +13,9 @@ import { Logger } from '@nestjs/common';
 import { createImagePath, editFileName } from '../utils/imgUpload.helper';
 import * as path from 'path';
 import * as fs from 'fs';
+import { RestaurantWithGivenEmailDoesNotExist } from 'src/httpExceptions/RestaurantWithGivenEmailDoesNotExist';
+import { check } from 'prettier';
+import { isEmail } from 'class-validator';
 
 @Injectable()
 export class RestaurantService {
@@ -27,10 +34,12 @@ export class RestaurantService {
     try {
 
       const imgPath = createImagePath(req, image, 'restaurant');
+      const hashedPass = await hashPassword(createRestaurantDto.password)
+
       const newRestaurant = await new this.restaurantModel({
         name: createRestaurantDto.name,
         email: createRestaurantDto.email,
-        password: createRestaurantDto.password,
+        password: hashedPass,
         image: imgPath,
         timing: createRestaurantDto.timing,
         address: createRestaurantDto.address
@@ -53,7 +62,7 @@ export class RestaurantService {
   async findAll() {
 
     try {
-      const restaurants = await this.restaurantModel.find({})
+      const restaurants = await this.restaurantModel.find({}).select("-password")
       return restaurants
     } catch (error) {
       throw { message: error.message }
@@ -64,7 +73,7 @@ export class RestaurantService {
   async findOne(id: string) {
 
     try {
-      const restaurant = await this.restaurantModel.findById({ _id: id })
+      const restaurant = await this.restaurantModel.findById({ _id: id }).select("-password")
       return restaurant
     }
     catch (error) {
@@ -113,10 +122,31 @@ export class RestaurantService {
 
   // finding restaurant by email
   async findRestaurantByEmail(email) {
-    this.logger.log('findrestaurantbyemail is running')
     const restaurant = await this.restaurantModel.findOne({ email })
     return restaurant
   }
+
+  //loggin
+  async findRestaurantByLogin(loginDto: LoginDto) {
+
+    const restaurant = await this.restaurantModel.findOne({ email: loginDto.email })
+    if (!restaurant) {
+      throw new RestaurantWithGivenEmailDoesNotExist()
+    }
+
+    const checked = await comparePassword(loginDto.password, restaurant.password)
+    if (!checked) {
+      throw new UnauthorizedException()
+    }
+    return restaurant
+  }
+
+  // function for validation
+  async findRestaurantByPayload(payload) {
+      const restaurant = await this.restaurantModel.findOne({ where: { payload } })
+    return restaurant
+  }
+
 
 
 }

@@ -1,4 +1,4 @@
-import { LocalAuthGuard } from './auth/local-auth.guard';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Controller, Get, UseGuards , Request} from '@nestjs/common';
 import { AppService } from './app.service';

@@ -1,4 +1,5 @@
-import { LocalAuthGuard } from './../auth/local-auth.guard';
+
+
 import { diskStorage } from 'multer';
 import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam, UseGuards } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
@@ -6,54 +7,32 @@ import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { editFileName, imageFilter } from '../utils/imgUpload.helper';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('restaurant')
 export class RestaurantController {
 
-  constructor(private readonly restaurantService: RestaurantService) { }
-
-  // adding restaurant
-  @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: "./public/uploads/restaurant",
-        filename: editFileName
-      }),
-      fileFilter: imageFilter
-    }))
-  async create(
-    @Request() req,
-    @Body() createRestaurantDto: CreateRestaurantDto,
-    @UploadedFile() file: Express.Multer.File
-  ) {
-    return (this.restaurantService.create(req, createRestaurantDto, file))
-  }
-
-
-  //login
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@Request() req) {
-    return req.restaurant
-  }
+  constructor(
+    private readonly restaurantService: RestaurantService
+  ) { }
 
   @Get()
-  findAll() {
+  @UseGuards(AuthGuard('jwt'))
+  findAll(@Request() req: any) {
     return this.restaurantService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
     return this.restaurantService.findOne(id);
   }
 
-
-
   // problem:- image is not getting uploaded (in restaurant folder) and existing image is not getting deleted. when change directory path to something else like (restaurant2) in destination then image is getting upload. 
   // using Id as "param" because auth is not done yet. once auth is established "id " will be extracted from jwt
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -71,11 +50,11 @@ export class RestaurantController {
     return this.restaurantService.update(req, id, updateRestaurantDto, file);
   }
 
-
-
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
     return this.restaurantService.remove(id);
   }
 
+  
 }
