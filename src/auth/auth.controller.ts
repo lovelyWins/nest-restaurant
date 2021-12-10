@@ -35,13 +35,12 @@ export class AuthController {
     }
 
     //login restaurant
-    
-    
     @Post('login')
     async login(@Body() loginDto: LoginDto) {
         return this.authService.login(loginDto)
     }
 
+    // testing auth
     @UseGuards(AuthGuard())
     @Get('test')
     public async testAuth(@Req() req: any) {

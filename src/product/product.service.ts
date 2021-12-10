@@ -19,33 +19,41 @@ export class ProductService {
 
 
   async create(req, createProductDto: CreateProductDto, image: Express.Multer.File) {
-
-    const imgPath = createImagePath(req, image, 'product');
-    const newProduct = await new this.productModel({
-      name: createProductDto.name,
-      image: imgPath,
-      price: createProductDto.price,
-      category: createProductDto.category,
-      restaurant: createProductDto.restaurant
-    })
-    await newProduct.save()
-    return { message: "Product added" }
-
+    try {
+      const imgPath = createImagePath(req, image, 'product');
+      const newProduct = await new this.productModel({
+        name: createProductDto.name,
+        image: imgPath,
+        price: createProductDto.price,
+        category: createProductDto.category,
+        restaurant: createProductDto.restaurant
+      })
+      await newProduct.save()
+      return { message: "Product added" }
+    }
+    catch (error) {
+      throw error
+    }
   }
 
   async findAll() {
-    const products = await this.productModel.find({})
-    return { products }
+    try {
+      const products = await this.productModel.find({})
+      return { products }
+    } catch (error) {
+      throw error
+    }
   }
 
   async findOne(id: string) {
-    const product = await this.productModel.findById({ _id: id })
-    return { product }
+    try {
+      const product = await this.productModel.findById({ _id: id })
+      return { product }
+    }
+    catch (error) { throw error }
   }
 
   async update(req, id: string, updateProductDto: UpdateProductDto, newImg: Express.Multer.File) {
-
-
     try {
       if (newImg && newImg.path) {
         updateProductDto.image = createImagePath(req, newImg, 'restaurant')
@@ -56,9 +64,7 @@ export class ProductService {
       const updatedProduct = await this.productModel.findByIdAndUpdate({ _id: id }, updateProductDto, { new: true, upsert: true })
       await updatedProduct.save()
 
-      if (newImg) {
-        fs.unlinkSync(path.join(__dirname, "../../public/uploads/product", path.basename(updateProductDto.image)))
-      }
+      if (newImg) { fs.unlinkSync(path.join(__dirname, "../../public/uploads/product", path.basename(updateProductDto.image)))}
 
       return { message: "Product updated " }
 

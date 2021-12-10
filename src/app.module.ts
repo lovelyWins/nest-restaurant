@@ -8,6 +8,7 @@ import { ProductModule } from './product/product.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
+import { CustomerModule } from './customer/customer.module';
 
 
 @Module({
@@ -17,7 +18,8 @@ import { ConfigModule } from '@nestjs/config';
     RestaurantModule,
     DatabaseModule,
     ProductModule,
-    AuthModule
+    AuthModule,
+    CustomerModule
   ],
   controllers: [AppController],
   providers: [AppService],
