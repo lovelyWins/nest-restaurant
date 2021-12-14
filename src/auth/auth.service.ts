@@ -1,3 +1,5 @@
+import { PayloadDto } from './dto/payload.dto';
+import { CustomerService } from './../customer/customer.service';
 import { HttpException } from './../httpExceptions/HttpException';
 
 import { LoginDto } from './dto/login.dto';
@@ -14,6 +16,7 @@ export class AuthService {
     constructor(
         private restaurantService: RestaurantService,
         private jwtService: JwtService,
+        private customerService: CustomerService
 
     ) {
         this.logger = new Logger()
@@ -31,12 +34,6 @@ export class AuthService {
 
     }
 
-    // login method
-    async login(loginDto: LoginDto) {
-        const restaruant = await this.restaurantService.findRestaurantByLogin(loginDto)
-        return this.createToken(restaruant.id)
-    }
-
     // creating jwt token
     async createToken(id: string) {
         const expiresIn = process.env.EXPIRESIN
@@ -44,8 +41,29 @@ export class AuthService {
         return { token, expiresIn }
     }
 
+    // restaurant login
+    async login(loginDto: LoginDto) {
+        const restaruant = await this.restaurantService.findRestaurantByLogin(loginDto)
+        return this.createToken(restaruant.id)
+    }
+
+    // customer login
+    async customerLogin(loginDto: LoginDto) {
+        const customer = await this.customerService.findCustomerByLogin(loginDto)
+        return this.createToken(customer.id)
+    }
+
+    // customer validation
+    async validateCustomer(payload:PayloadDto){
+        const customer = await this.customerService.findCustomerByPayload(payload)
+        if(!customer){
+            throw new UnauthorizedException()
+        }
+        return customer
+    }
+
     // validate restaurant
-    async vaidateRestauant(payload) {
+    async vaidateRestauant(payload:PayloadDto) {
         const restaurant = await this.restaurantService.findRestaurantByPayload(payload)
         if (!restaurant) {
             throw new UnauthorizedException()

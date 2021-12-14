@@ -1,3 +1,5 @@
+import { CustomerModule } from './../customer/customer.module';
+import { CustomerService } from './../customer/customer.service';
 import { JwtStrategy } from './jwt.strategy';
 import { RestaurantService } from './../restaurant/restaurant.service';
 import { Module } from '@nestjs/common';
@@ -14,10 +16,11 @@ import { ConfigModule } from '@nestjs/config';
 
   imports: [
     RestaurantModule,
+    CustomerModule,
     ConfigModule.forRoot(),
     PassportModule.register({
       defaultStrategy: 'jwt',
-      property: 'restaurant',
+      property: 'user',
       session: false
     }),
     JwtModule.register({

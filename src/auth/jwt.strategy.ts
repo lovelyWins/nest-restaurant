@@ -1,3 +1,4 @@
+import { PayloadDto } from './dto/payload.dto';
 import { AuthService } from './auth.service';
 import { PassportStrategy } from "@nestjs/passport";
 import { Inject, UnauthorizedException, Injectable } from '@nestjs/common';
@@ -20,8 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         logger: new Logger()
     }
 
-    //function for validation
-    async validate(payload) {
+    // restaurant token validation
+    async validate(payload:PayloadDto) {
         const restaurant = await this.authservice.vaidateRestauant(payload)
         if (!restaurant) {
             throw new UnauthorizedException()
@@ -29,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         return restaurant
     }
 
-
+    
 
 
 }

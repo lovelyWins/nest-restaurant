@@ -1,4 +1,5 @@
-import { JwtService } from '@nestjs/jwt';
+import { Role } from './../enums/roles.enum';
+import { PayloadDto } from './../auth/dto/payload.dto';
 import { comparePassword, } from './../utils/auth.helper';
 import { LoginDto } from './../auth/dto/login.dto';
 import { RestaurantWithThatEmailAlreadyExistsException } from './../httpExceptions/RestaurantWithThatEmailAlreadyExistsException';
@@ -14,8 +15,7 @@ import { createImagePath, editFileName } from '../utils/imgUpload.helper';
 import * as path from 'path';
 import * as fs from 'fs';
 import { RestaurantWithGivenEmailDoesNotExist } from 'src/httpExceptions/RestaurantWithGivenEmailDoesNotExist';
-import { check } from 'prettier';
-import { isEmail } from 'class-validator';
+
 
 @Injectable()
 export class RestaurantService {
@@ -36,8 +36,10 @@ export class RestaurantService {
       const imgPath = createImagePath(req, image, 'restaurant');
       const hashedPass = await hashPassword(createRestaurantDto.password)
 
+     
       const newRestaurant = await new this.restaurantModel({
         name: createRestaurantDto.name,
+        roles: Role.RESTAURANT,
         email: createRestaurantDto.email,
         password: hashedPass,
         image: imgPath,
@@ -129,21 +131,30 @@ export class RestaurantService {
   //loggin
   async findRestaurantByLogin(loginDto: LoginDto) {
 
-    const restaurant = await this.restaurantModel.findOne({ email: loginDto.email })
-    if (!restaurant) {
-      throw new RestaurantWithGivenEmailDoesNotExist()
+    try {
+      // finding restaurant with email
+      const restaurant = await this.restaurantModel.findOne({ email: loginDto.email })
+      if (!restaurant) {
+        throw new RestaurantWithGivenEmailDoesNotExist()
+      }
+
+      // checking password
+      const checked = await comparePassword(loginDto.password, restaurant.password)
+      if (!checked) {
+        throw new UnauthorizedException()
+      }
+
+      return restaurant
+    }
+    catch (error) {
+      throw error
     }
 
-    const checked = await comparePassword(loginDto.password, restaurant.password)
-    if (!checked) {
-      throw new UnauthorizedException()
-    }
-    return restaurant
   }
 
   // function for validation
-  async findRestaurantByPayload(payload) {
-      const restaurant = await this.restaurantModel.findOne({ where: { payload } })
+  async findRestaurantByPayload(payload: PayloadDto) {
+    const restaurant = await this.restaurantModel.findOne({ where: { payload } })
     return restaurant
   }
 

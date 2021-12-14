@@ -10,6 +10,7 @@ const addressSchema = new mongoose.Schema({
 export const RestaurantSchema = new mongoose.Schema({
 
     name: { type: String },
+    roles: { type: [String] },
     email: { type: String, unique: true },
     image: { type: String },
     timing: { type: [String] },
@@ -17,4 +18,5 @@ export const RestaurantSchema = new mongoose.Schema({
     address: { type: addressSchema }
 
 })
+
 

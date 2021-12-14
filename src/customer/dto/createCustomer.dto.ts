@@ -5,6 +5,10 @@ export class CreateCustomerDto {
     public name: string;
 
     @IsString()
+    public roles: string[];
+
+
+    @IsString()
     public email: string;
 
     @IsString()

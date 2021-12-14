@@ -3,14 +3,13 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class AppService {
 
-  logger:Logger
+  logger: Logger
 
-  constructor(){
+  constructor() {
     this.logger = new Logger()
   }
 
   getHello(): string {
-    this.logger.log('logger is running')
     return 'Hello World!';
   }
 }

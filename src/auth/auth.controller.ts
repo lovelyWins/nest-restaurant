@@ -40,12 +40,31 @@ export class AuthController {
         return this.authService.login(loginDto)
     }
 
+    // customer login
+    @Post('customer/login')
+    async customerLogin(
+        @Body() loginDto: LoginDto
+    ) {
+        return this.authService.customerLogin(loginDto)
+    }
+
+
+
+
     // testing auth
     @UseGuards(AuthGuard())
     @Get('test')
     public async testAuth(@Req() req: any) {
-      return req.restaurant;
+        return req.user;
     }
 
-    
+    //testing auth2
+    @UseGuards(AuthGuard())
+    @Get('test')
+    public async testAuth2(@Req() req: any) {
+        return req.user.roles;
+    }
+
+
+
 }

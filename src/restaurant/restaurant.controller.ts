@@ -1,13 +1,13 @@
-
-
+import { Roles } from './../decorators/roles.decorator';
 import { diskStorage } from 'multer';
-import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam, UseGuards } from '@nestjs/common';
+import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam, UseGuards, SetMetadata } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { editFileName, imageFilter } from '../utils/imgUpload.helper';
 import { AuthGuard } from '@nestjs/passport';
+import { Role } from '../enums/roles.enum';
 
 
 @Controller('restaurant')
@@ -56,5 +56,19 @@ export class RestaurantController {
     return this.restaurantService.remove(id);
   }
 
-  
+
+
+  @Get('test/onlyRestaurant')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.RESTAURANT)
+  async testRole() {
+    return 'only for restaurant'
+  }
+  @Get('test/onlyCustomer')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.CUSTOMER)
+  async testRole2() {
+    return 'only for customer'
+  }
+
 }

@@ -7,6 +7,7 @@ import { CustomerController } from './customer.controller';
 @Module({
   imports: [MongooseModule.forFeature([{ name: "Customer", schema: CustomerSchema }])],
   providers: [CustomerService],
-  controllers: [CustomerController]
+  controllers: [CustomerController],
+  exports :[CustomerService]
 })
 export class CustomerModule { }

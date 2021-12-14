@@ -1,3 +1,4 @@
+import { RoleGuard } from './auth/guards/role.guard'; 
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { Module } from '@nestjs/common';
@@ -9,6 +10,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { CustomerModule } from './customer/customer.module';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -22,6 +24,10 @@ import { CustomerModule } from './customer/customer.module';
     CustomerModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard
+    }],
 })
 export class AppModule { }

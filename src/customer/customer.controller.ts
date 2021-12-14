@@ -1,7 +1,7 @@
 import { UpdateCustomerDto } from './dto/updateCustoer.dto';
 import { CreateCustomerDto } from './dto/createCustomer.dto';
 import { CustomerService } from './customer.service';
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 @Controller('customer')
 export class CustomerController {
@@ -34,5 +34,29 @@ export class CustomerController {
         return this.customerService.updateCustomer(id, updateCustomerDto)
     }
 
+    @Delete(':id')
+    async deleteCustomer(
+        @Param('id') id: string
+    ) {
+        return this.customerService.deleteCustomer(id)
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
