@@ -37,7 +37,7 @@ export class AuthService {
     // creating jwt token
     async createToken(id: string) {
         const expiresIn = process.env.EXPIRESIN
-        const payload = {id}
+        const payload = { id }
         const token = this.jwtService.sign(payload)
         return { token, expiresIn }
     }
@@ -65,34 +65,24 @@ export class AuthService {
 
     // validate restaurant
     async vaidateRestauant(payload: PayloadDto) {
+
+
         const restaurant = await this.restaurantService.findRestaurantByPayload(payload)
-        if (!restaurant) {
+        const customer = await this.customerService.findCustomerByPayload(payload)
+
+
+        if (!restaurant && !customer) {
             throw new UnauthorizedException()
         }
-        return restaurant
+
+        if (restaurant) {
+            return restaurant
+        }
+        else if (customer) {
+            return customer
+        }
+
     }
-
-
-
-
-
-    // async validateUser(payloadDto: PayloadDto) {
-    //     if (payloadDto.role.includes('restaurant')) {
-    //         const restaurant = this.restaurantService.findRestaurantByPayload(payloadDto)
-    //         if (!restaurant) {
-    //             throw new UnauthorizedException()
-    //         }
-    //         return restaurant
-
-    //     }
-    //     else if (payloadDto.role.includes('customer')) {
-    //         const customer = await this.customerService.findCustomerByPayload(payloadDto)
-    //         if (!customer) {
-    //             throw new UnauthorizedException()
-    //         }
-    //         return customer
-    //     }
-    // }
 
 
 

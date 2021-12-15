@@ -4,7 +4,4 @@ export class PayloadDto {
     @IsString()
     public id: string;
 
-    @IsArray()
-    public role: [string];
-
 }

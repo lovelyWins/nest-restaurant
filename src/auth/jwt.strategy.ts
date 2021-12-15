@@ -22,15 +22,30 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // restaurant token validation
-    async validate(payload:PayloadDto) {
+    async validate(payload: PayloadDto) {
+
+        // const restaurant = await this.authservice.vaidateRestauant(payload)
+        // const customer = await this.authservice.validateCustomer(payload)
+        // if (!restaurant && !customer) {
+        //     throw new UnauthorizedException()
+        // }
+
+        // if (restaurant) {
+        //     return restaurant
+        // }
+        // else if (customer) {
+        //     return customer
+        // }
+
         const user = await this.authservice.vaidateRestauant(payload)
         if (!user) {
             throw new UnauthorizedException()
         }
         return user
+        
     }
 
-    
+
 
 
 }

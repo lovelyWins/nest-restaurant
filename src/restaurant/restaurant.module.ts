@@ -5,7 +5,6 @@ import { RestaurantService } from './restaurant.service';
 import { RestaurantController } from './restaurant.controller';
 import { MulterModule } from '@nestjs/platform-express';
 
-
 @Module({
   imports: [
     MulterModule.register({
@@ -13,8 +12,8 @@ import { MulterModule } from '@nestjs/platform-express';
   }),
   MongooseModule.forFeature([{ name: 'Restaurant', schema: RestaurantSchema }]),],
   controllers: [RestaurantController],
-  providers: [RestaurantService],
-  exports: [RestaurantService]
+  providers: [RestaurantService,],
+  exports: [RestaurantService,]
 })
 
 export class RestaurantModule { }

@@ -2,6 +2,7 @@ import { Role } from './../../enums/roles.enum';
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Logger } from '@nestjs/common';
+import { throws } from 'assert';
 
 
 @Injectable()
@@ -25,7 +26,6 @@ export class RoleGuard implements CanActivate {
 
         // getting error when use this peace of code, which is supposed to extract user from request 
         const { user } = context.switchToHttp().getRequest();
-        this.logger.log({user})
 
         // when use dummy user, then auth is working fine
         // const user = {

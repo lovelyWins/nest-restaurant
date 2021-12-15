@@ -1,3 +1,4 @@
+import { RoleGuard } from './guards/role.guard';
 import { LoginDto } from './dto/login.dto';
 import { CreateRestaurantDto } from './../restaurant/dto/create-restaurant.dto';
 import { editFileName, imageFilter } from './../utils/imgUpload.helper';
@@ -59,7 +60,7 @@ export class AuthController {
     }
 
     //testing auth2
-    @UseGuards(AuthGuard())
+    @UseGuards(AuthGuard(),RoleGuard)
     @Get('test2')
     public async testAuth2(@Req() req: any) {
         return req.user;

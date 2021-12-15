@@ -1,3 +1,4 @@
+import { RoleGuard } from './guards/role.guard';
 import { CustomerModule } from './../customer/customer.module';
 import { CustomerService } from './../customer/customer.service';
 import { JwtStrategy } from './jwt.strategy';
@@ -10,6 +11,7 @@ import { RestaurantModule } from 'src/restaurant/restaurant.module';
 import { JwtService } from '@nestjs/jwt';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -31,7 +33,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
 
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy,],
   controllers: [AuthController],
   exports: [PassportModule, JwtModule]
 })
