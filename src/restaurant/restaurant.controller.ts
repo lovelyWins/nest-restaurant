@@ -1,3 +1,4 @@
+import { RoleGuard } from './../auth/guards/role.guard';
 import { Roles } from './../decorators/roles.decorator';
 import { diskStorage } from 'multer';
 import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HostParam, UseGuards, SetMetadata } from '@nestjs/common';
@@ -59,14 +60,17 @@ export class RestaurantController {
 
 
   @Get('test/onlyRestaurant')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.RESTAURANT)
   async testRole() {
     return 'only for restaurant'
   }
+
+
+
   @Get('test/onlyCustomer')
-  @UseGuards(AuthGuard('jwt'))
   @Roles(Role.CUSTOMER)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
   async testRole2() {
     return 'only for customer'
   }

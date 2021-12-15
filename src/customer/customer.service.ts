@@ -117,7 +117,8 @@ export class CustomerService {
 
     // verifyin token 
     async findCustomerByPayload(payload: PayloadDto) {
-        const customer = await this.customerModel.findOne({ where: { payload } })
+        const id = payload.id
+        const customer = await this.customerModel.findById({ _id: id})
         return customer
     }
 

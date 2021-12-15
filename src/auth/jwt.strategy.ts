@@ -23,11 +23,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // restaurant token validation
     async validate(payload:PayloadDto) {
-        const restaurant = await this.authservice.vaidateRestauant(payload)
-        if (!restaurant) {
+        const user = await this.authservice.vaidateRestauant(payload)
+        if (!user) {
             throw new UnauthorizedException()
         }
-        return restaurant
+        return user
     }
 
     

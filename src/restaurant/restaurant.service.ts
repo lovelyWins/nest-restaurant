@@ -36,7 +36,7 @@ export class RestaurantService {
       const imgPath = createImagePath(req, image, 'restaurant');
       const hashedPass = await hashPassword(createRestaurantDto.password)
 
-     
+
       const newRestaurant = await new this.restaurantModel({
         name: createRestaurantDto.name,
         roles: Role.RESTAURANT,
@@ -154,7 +154,8 @@ export class RestaurantService {
 
   // function for validation
   async findRestaurantByPayload(payload: PayloadDto) {
-    const restaurant = await this.restaurantModel.findOne({ where: { payload } })
+    const id = payload.id
+    const restaurant = await this.restaurantModel.findById({ _id: id})
     return restaurant
   }
 

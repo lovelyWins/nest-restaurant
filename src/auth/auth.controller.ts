@@ -60,9 +60,9 @@ export class AuthController {
 
     //testing auth2
     @UseGuards(AuthGuard())
-    @Get('test')
+    @Get('test2')
     public async testAuth2(@Req() req: any) {
-        return req.user.roles;
+        return req.user;
     }
 
 

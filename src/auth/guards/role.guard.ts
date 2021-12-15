@@ -24,14 +24,15 @@ export class RoleGuard implements CanActivate {
         }
 
         // getting error when use this peace of code, which is supposed to extract user from request 
-        // const { user } = context.switchToHttp().getRequest();
+        const { user } = context.switchToHttp().getRequest();
+        this.logger.log({user})
 
         // when use dummy user, then auth is working fine
-        const user = {
-            name: 'locely',
-            roles: [Role.RESTAURANT]
-        };
-        this.logger.log(user);
+        // const user = {
+        //     name: 'locely',
+        //     roles: [Role.RESTAURANT]
+        // };
+
         return requiredRoles.some((role) => user.roles?.includes(role));
 
     }

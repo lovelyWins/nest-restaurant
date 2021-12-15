@@ -1,4 +1,4 @@
-import { RoleGuard } from './auth/guards/role.guard'; 
+import { RoleGuard } from './auth/guards/role.guard';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { Module } from '@nestjs/common';
