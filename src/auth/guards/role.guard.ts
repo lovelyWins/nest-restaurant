@@ -23,15 +23,9 @@ export class RoleGuard implements CanActivate {
         if (!requiredRoles) {
             return true;
         }
-
-        // getting error when use this peace of code, which is supposed to extract user from request 
+        
         const { user } = context.switchToHttp().getRequest();
 
-        // when use dummy user, then auth is working fine
-        // const user = {
-        //     name: 'locely',
-        //     roles: [Role.RESTAURANT]
-        // };
 
         return requiredRoles.some((role) => user.roles?.includes(role));
 

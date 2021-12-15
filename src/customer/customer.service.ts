@@ -19,11 +19,11 @@ export class CustomerService {
     // adding customer
     async addCustomer(createCustomerDto: CreateCustomerDto) {
         try {
-            const role = Role
+         
             const hashedPassword = await hashPassword(createCustomerDto.password)
             const customer = await new this.customerModel({
                 name: createCustomerDto.name,
-                role: role.CUSTOMER,
+                roles: Role.CUSTOMER,
                 email: createCustomerDto.email,
                 password: hashedPassword,
                 phone: createCustomerDto.phone
